@@ -1,5 +1,78 @@
 {% layout "template.liquid" %}
 
-{% block content %}
-    <h1>{{ product.title | capitalize }}</h1>
+{% block product %}
+
+<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+<link rel="stylesheet" href="/styles/product.css" />
+
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="/scripts/theme.js" defer></script>
+
+<div id="product" class="container px-5 mx-auto flex flex-wrap py-20" data-product>
+  <div class="product-gallery w-full md:w-7/12">
+    <div class="swiper" data-swiper-container>
+      <div class="swiper-wrapper">
+        {% for image in product.images %}
+          <div class="swiper-slide" data-swiper-slide>
+            <img
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAQAAAAe/WZNAAAADklEQVR42mNkgAJGDAYAAFEABCaLYqoAAAAASUVORK5CYII="
+              data-src="{{ image | img_url: "800x"}}"
+              class="swiper-lazy w-full h-auto"
+              alt="{{image.alt}}">
+              <div class="swiper-lazy-preloader"></div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+  <form name="addToCart" target="/cart" class="product-form w-full md:w-5/12 pl-0 md:pl-10">
+    <h1 class="text-3xl font-bold mb-5">
+      {{ product.title | capitalize }}
+    </h1>
+    <span class="product-price text-blue" data-product-price>
+      $ {{ product.price | divided_by: 100}}
+    </span>
+    <div class="product__options-container my-5">
+      {% for option in product.options %}
+        <div class="product-option__block mb-5">
+          <span class="text-md font-bold mb-5 block">
+            Select your {{ option.name }}:
+          </span>
+          <div class="grid grid-cols-4 lg:grid-cols-5 gap-x-5 gap-y-5">
+            {% for value in option.values %}
+              <label class="cursor-pointer">
+                <input class="product-option__radio hidden" type="radio" name="option-{{option.name}}" value="{{value}}" {% if forloop.index == 1 %} checked {% endif %} data-variant-option>
+                <span class="product-option__ui block border-2 rounded-md text-center py-2 lg:px-1">
+                  {{ value }}
+                </span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <select name="id" class="hidden" data-product-id>
+      {% for variant in product.variants %}
+        <option value="{{variant.id}}" {% unless variant.available %} disabled {% endunless %}>{{ variant.title }}</option>
+      {% endfor %}
+    </select>
+    <div class="flex">
+      <div class="quantity-selector border-2 border-black inline-flex w-6/12 md:w-4/12 ">
+        <button class="py-2 px-4 pointer" type="button" data-qty-spinner="decrease">-</button>
+        <input class="quantity-selector__input border-0 text-center bg-transparent w-full" type="number" name="quantity" value="1" min="1" data-quantity-selector>
+        <button class="py-2 px-4 pointer" type="button" data-qty-spinner="increase">+</button>
+      </div>
+
+      <button type="submit" class="inline-block bg-blue-400 text-white w-6/12 md:w-8/12 ml-5" data-add-to-cart>Add to Cart</button>
+    </div>
+  </form>
+
+  <script type="application/json" data-product-json>
+    {{ product | json }}
+  </script>
+</div>
+
 {% endblock %}
