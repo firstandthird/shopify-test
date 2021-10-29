@@ -1,56 +1,42 @@
-# First + Third Shopify Developer Challenge
+# Set up process
+## Thinking process
+Javascript file was set up to follow the same logic that Shopfy Slate proves by creating Constructors for each module prsent on the page.
 
-Hello there potential Shopify Expert!
+On this project it was set up for both the **Product form** section and the **Cart** section this to isolate each feature apropriatedly letting them control their own parts of the website.
 
-We would like to assess your Shopify Accumen so we have developed this pretty awesome test that will stretch your imagination, but not take you too much time. The challenge is to create a simple Product Detail Page (PDP) using Shopify Liquid Syntax, and the AJAX cart api all contained within this simple repository.
+----
 
-To make the challenge as accessible as possible, we have created a standalone node app that will serve up the finished product and handle all of the routes that you will need to complete the project.
+## Product form logic
+For the product section tried to include as much information present as possible so the module addresses the following situations:
 
-*Sound FUN?!?* - then read on.
+### Variant change
+Whenever the user selects a different option the script will iterate through the productJson object previously captured in order to find the ID that correspond with said option, once this is done the script will update the followign attached data
 
-## Setup
+* Product Price
+* Product Variant ID (hidden selector)
 
-As mentioned, the challenge is self contained within this repository so there will be no need to create a dev store or anything like that. Instead we created a little module that will show rendered liquid code, serve static assets, and handle the cart POST request for you. And while it helps if you have an understanding of node-js, it should be simple enough to run without any help.
+As part of this implementation more details can be updated for example the following:
 
-Simply follow these instructions to get the project running:
+* Product gallery (by picking any relevant product option and matching it with a section of the alt text of the images allowing us to toggle them on demand)
+* Add to cart button status ( By checking the product availability the button can be either disabled, enabled, or exchanged by a Notify Me button to trigger a BIS flow)
+* Variant specific data (By picking information from product custom fields other areas of the page can be changed)
 
-1. Fork this repository into your own github profile and make any changes in that repository space.
-2. Clone the repository onto your development environment.
-3. From the new folder, install the required modules using `npm install` (Or your favorite package manager).
-4. Start the development server using `npm run dev`.
+### Quantity selector
+This piece can be extracted into its own code so we can use the logic anywhere (such as product cards and/or cart page) turning the item into its own module but for the scope of this project it was set up within the product page.
 
-You should now have a development server running on port `3000` that will display the default information.
+----
 
-## Challenge Instructions
+## Cart logic
 
-*Congratulations! You have made it this far!* Now for the actual fun part.
+On the other hand the cart (and/or mini cart) is the piece joining all together, so instead of having mutliple scripts handlign submissions to the cart it will be only global event handling all of them.
 
-The simple app is a single route web server that serves liquid templates out of the `templates` folder. Inside that folder there is a base `template.liquid` folder as well as the main file, `product.liquid` which serves as the main template file. It would be best to keep the template files simple, but you should be able to add additional templates or template parts as required.
+Having the cart being its own module allows the possibility to handle multiple kind of forms consistently by just adding the product form base structure to any module that needs it (PLP cards, Cart Upsell cards, some other modules that need to submit products in special circumstances), or serving some of the methods as utilities that will ease different data submission, this also will handle any update made to the cart such as updating the cart count, updating the button add status or even opening the sidecart to create a visual response.
 
-The data for the product page comes from the `product.json` file in the root of the main directory. This is a product object taken from an actual Shopify store and is passed to the rendering engine as the variable `product` which you should see in the `product.liquid` file.
+This kind of modularization also opens up space to integrate features like GWP and BOGO (they might require to use shopify scripts for pricing updates).
 
-Any static files can be placed inside the `public` folder and they will be served from there. The images referenced in the product object are already inside that folder and can be accessed at `/images/{filename}.png`.
+----
 
-So here is what we are looking for.
-
-* Using the liquid templates and whatever static assets you need, create a single simple product detail page that renders the product details.
-* Make sure to add some style. You can do this with a simple vanilla CSS file, a `<style>` tagin the head of the page, or if you are comfortable - with your favorite css compiler.
-* The PDP should have an add to cart button that is clearly visible.
-* Using some front end javascript, attach a handler to the add to cart button that posts the appropriate information the `cart/add.js` route. That route will simply return the data `{ success: 1 }` so display a success message to let the user know their product was added correctly!
-* Make sure the add to cart request sends the appropriate data to the endpoint to add an item to the cart (Using the shopify API paradigm).
-
-And *Voila!* You are almost done!
-
-## Troubleshooting tips
-
-Since this is not _actually_ a shopify site, we can't expect it to behave exactly like a shopify site in terms of error handling. If an error occurs (as in a mis-typed variable, or bad liquid syntax) the page will return a 500 error. All errors are logged in the console so look out there for what might be going wrong. 
-
-To stop the development server, simlpy do a `ctrl` + `c` and the node process will stop.
-
-# LASTLY: THE MOST IMPORTANT PART
-
-When you are done - remove _ALL_ of the text from this README, and replace it with a description of what you did. Tell us why you made the choices you did, what you would have liked to do better, what was your favorite part, and most importantly, what would you change if this we're _ACTUALLY_ a shopify theme.
-
-Once you have that done - Commit a new branch - and send us a link to your repo so that we can review what you did.
-
-Don't forget - *HAVE FUN!*
+# What would I add to the test
+* Basic HTML structure to compensate the lack of certain native methods such as the filter **| options_with_values** and allow for reviewing a responsive experience
+* Data validation on the API endpoint to ease spotting data submission errors, and adding more chance for depper results
+* Different variant data so it can be reflected on the product details (prices, discount prices, different variant availability) this will lead to have more chance of code improvement

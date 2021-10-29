@@ -1,0 +1,14 @@
+.product-option__radio:checked ~ .product-option__ui {
+  border-color: #000;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
